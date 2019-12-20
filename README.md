@@ -14,8 +14,10 @@ Simple **multi-module MVVM** architecture. The **base** module contains everythi
 
 #### Quick demo
 
+![example](https://github.com/4gus71n/Square/blob/master/SquareExampleVid.gif?raw=true)
 
 #### Apk
+
 
 
 #### Notes
