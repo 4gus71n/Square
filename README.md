@@ -11,6 +11,7 @@ Simple **multi-module MVVM** architecture. The **base** module contains everythi
 - Retrofit as the REST client.
 - Dagger for DI
 - Gson to map the backend responses.
+- RxJava to expose the repositories.
 
 #### Quick demo
 
@@ -18,10 +19,11 @@ Simple **multi-module MVVM** architecture. The **base** module contains everythi
 
 #### Apk
 
-
+[Download the apk!](https://github.com/4gus71n/Square/blob/master/app-debug.apk?raw=true "Download the apk!")
 
 #### Notes
 
-Feel free to ask any question as an issue on this repo.
+- Feel free to ask any question as an issue on this repo.
+- This architecture it's a copy of a set of examples that I'm using on a Medium article that I'm writing. This is the original [repo](https://github.com/4gus71n/Examples). The article goes about the does and donts when developing a large-scale app.
 
 
