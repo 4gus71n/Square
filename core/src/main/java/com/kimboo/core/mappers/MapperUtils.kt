@@ -22,6 +22,7 @@ fun List<ApiSquareRespositoryResponse>.toSquareRepositoryList(): List<SquareRepo
 fun ApiSquareRespositoryResponse.toSquareRepository(): SquareRepository {
     return SquareRepository(
         name = name,
-        stars = stargazersCount
+        stars = stargazersCount,
+        id = id.toString()
     )
 }
