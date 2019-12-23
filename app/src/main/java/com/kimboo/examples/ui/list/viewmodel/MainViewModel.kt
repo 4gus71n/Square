@@ -22,6 +22,7 @@ class MainViewModel @Inject constructor(
             val bookmarks: List<String>
         ) : State()
         object Error : State()
+        object ErrorFetchingBookmarks : State()
     }
     // endregion
 
@@ -38,7 +39,7 @@ class MainViewModel @Inject constructor(
     }
 
     override fun onErrorFetchingBookmarkedRepositories() {
-        // TODO Show error message when we cannot fetch the bookmarked repositories
+        state.value = State.ErrorFetchingBookmarks
     }
     // endregion
 

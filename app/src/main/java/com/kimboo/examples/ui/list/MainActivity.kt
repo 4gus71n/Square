@@ -78,6 +78,9 @@ class MainActivity : AppCompatActivity(), SquareRepoAdapter.Callback {
                 is MainViewModel.State.Error -> {
                     onDisplayErrorMessage()
                 }
+                is MainViewModel.State.ErrorFetchingBookmarks -> {
+                    onDisplayErrorBookmarksMessage()
+                }
             }
         })
     }
@@ -86,6 +89,14 @@ class MainActivity : AppCompatActivity(), SquareRepoAdapter.Callback {
         squareRepoAdapter.bookmarkedRepositories.clear()
         squareRepoAdapter.bookmarkedRepositories.addAll(bookmarks)
         squareRepoAdapter.notifyDataSetChanged()
+    }
+
+    private fun onDisplayErrorBookmarksMessage() {
+        Snackbar.make(
+            mainActivityExamplesSwipeRefreshLayout,
+            getString(R.string.main_activity_error_bookmark_message),
+            Snackbar.LENGTH_LONG
+        ).show()
     }
 
     private fun onDisplayErrorMessage() {
