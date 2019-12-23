@@ -3,6 +3,9 @@ package com.kimboo.examples.ui.detail
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.kimboo.core.models.SquareRepository
 import com.kimboo.examples.R
@@ -16,6 +19,7 @@ import kotlinx.android.synthetic.main.detail_activity_info_section.*
 class DetailActivity : AppCompatActivity() {
 
     private var squareRepository: SquareRepository? = null
+    private var menuItemBookmark: MenuItem? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +46,28 @@ class DetailActivity : AppCompatActivity() {
             savedInstanceState.getParcelable(ARG_BUNDLE_REPOSITORY)
         } else {
             intent.getParcelableExtra(ARG_BUNDLE_REPOSITORY)
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_repository_detail, menu)
+        return true
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        menuItemBookmark = menu?.findItem(R.id.action_bookmark)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_bookmark -> {
+                // TODO Call the ViewModel here
+                true
+            }
+            else -> {
+                super.onOptionsItemSelected(item)
+            }
         }
     }
 
