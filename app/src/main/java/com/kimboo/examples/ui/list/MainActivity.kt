@@ -61,9 +61,17 @@ class MainActivity : AppCompatActivity(), SquareRepoAdapter.Callback {
         fetchRepositories()
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.getBookmarks()
+    }
+
     private fun observeStateChanges() {
         viewModel.state.observe(this, Observer {
             when (it) {
+                is MainViewModel.State.FetchedBookmarks -> {
+                    onLoadBookmarks(it.bookmarks)
+                }
                 is MainViewModel.State.Success -> {
                     onShowRepositoryList(it.list)
                 }
@@ -72,6 +80,12 @@ class MainActivity : AppCompatActivity(), SquareRepoAdapter.Callback {
                 }
             }
         })
+    }
+
+    private fun onLoadBookmarks(bookmarks: List<String>) {
+        squareRepoAdapter.bookmarkedRepositories.clear()
+        squareRepoAdapter.bookmarkedRepositories.addAll(bookmarks)
+        squareRepoAdapter.notifyDataSetChanged()
     }
 
     private fun onDisplayErrorMessage() {
