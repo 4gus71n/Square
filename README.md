@@ -17,6 +17,10 @@ Simple **multi-module MVVM** architecture. The **base** module contains everythi
 
 ![example](https://github.com/4gus71n/Square/blob/master/SquareExampleVid.gif?raw=true)
 
+##### Bookmarking 
+
+![example](https://github.com/4gus71n/Square/blob/master/Demo2.gif?raw=true)
+
 #### Apk
 
 [Download the apk!](https://github.com/4gus71n/Square/blob/master/app-debug.apk?raw=true "Download the apk!")
@@ -25,5 +29,9 @@ Simple **multi-module MVVM** architecture. The **base** module contains everythi
 
 - Feel free to ask any question as an issue on this repo.
 - This architecture it's a copy of a set of examples that I'm using on a Medium article that I'm writing. This is the original [repo](https://github.com/4gus71n/Examples). The article goes about the does and donts when developing a large-scale app.
+
+##### Update #1
+
+- Added the bookmarking feature. I implemented the cache just using the SharedPreferences. I'm probably going to start a new PR with a different, more scalable solution.
 
 
