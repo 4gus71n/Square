@@ -1,5 +1,8 @@
 package com.kimboo.core.di.modules
 
+import android.content.SharedPreferences
+import com.kimboo.core.repositories.SquareBookmarkCacheRepository
+import com.kimboo.core.repositories.SquareBookmarkRepository
 import com.kimboo.core.repositories.SquareReposNetworkRepository
 import com.kimboo.core.repositories.SquareReposRepository
 import com.kimboo.core.retrofit.api.SquareApi
@@ -20,6 +23,19 @@ class RepositoryModule {
             uiScheduler = uiScheduler,
             backgroundScheduler = backgroundScheduler,
             retrofitApi = squareApi
+        )
+    }
+
+    @Provides
+    fun provideSquareBookmarkRepository(
+        @Named("uiScheduler") uiScheduler: Scheduler,
+        @Named("backgroundScheduler") backgroundScheduler: Scheduler,
+        sharedPreferences: SharedPreferences
+    ) : SquareBookmarkRepository {
+        return SquareBookmarkCacheRepository(
+            uiScheduler = uiScheduler,
+            backgroundScheduler = backgroundScheduler,
+            sharedPreferences = sharedPreferences
         )
     }
 }
