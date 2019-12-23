@@ -3,14 +3,20 @@ package com.kimboo.examples.ui.detail
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProviders
 import com.kimboo.core.models.SquareRepository
+import com.kimboo.core.utils.MyViewModelFactory
+import com.kimboo.core.utils.getBaseSubComponent
 import com.kimboo.examples.R
+import com.kimboo.examples.di.component.DaggerExampleViewInjector
+import com.kimboo.examples.di.component.ExampleViewInjector
+import com.kimboo.examples.ui.detail.viewmodel.DetailViewModel
 import kotlinx.android.synthetic.main.detail_activity.*
 import kotlinx.android.synthetic.main.detail_activity_info_section.*
+import javax.inject.Inject
 
 /**
  * Displays the Repository details. There's not much to do here since we are not fetching anything
@@ -18,12 +24,29 @@ import kotlinx.android.synthetic.main.detail_activity_info_section.*
  */
 class DetailActivity : AppCompatActivity() {
 
+    // region Variables declaration
     private var squareRepository: SquareRepository? = null
     private var menuItemBookmark: MenuItem? = null
+
+    @Inject
+    lateinit var viewModelProvider: MyViewModelFactory
+    lateinit var viewModel: DetailViewModel
+
+    private val viewInjector: ExampleViewInjector
+        get() = DaggerExampleViewInjector.builder()
+            .baseSubComponent(getBaseSubComponent())
+            .build()
+    // endregion
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.detail_activity)
+
+        viewInjector.inject(this)
+
+        viewModel = ViewModelProviders.of(this, viewModelProvider)
+            .get(DetailViewModel::class.java)
+
         fetchBundleValus(savedInstanceState)
         setupToolbarView()
         setupTextView()
