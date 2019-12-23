@@ -1,6 +1,7 @@
 package com.kimboo.core.di.modules
 
 import android.content.Context
+import android.content.Context.MODE_PRIVATE
 import dagger.Module
 import dagger.Provides
 import io.reactivex.Scheduler
@@ -17,6 +18,10 @@ class AppModule (private val context: Context) {
     @Provides
     @Singleton
     fun provideContext() = context
+
+    @Provides
+    @Singleton
+    fun provideSharedPreferences() = context.getSharedPreferences("square", MODE_PRIVATE)
 
     @Provides
     @Singleton
