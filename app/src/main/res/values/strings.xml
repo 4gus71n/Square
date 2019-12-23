@@ -3,4 +3,6 @@
     <string name="main_activity_error_message">Oops! Something went wrong while fetching the repositories. Try again later.</string>
     <string name="detail_activity_name">Name</string>
     <string name="stars">Stars</string>
+    <string name="detail_activity_error_saving_bookmark">Oops! Something went wrong while trying to bookmark this repository. Try again later.</string>
+    <string name="main_activity_error_bookmark_message">Oops! Something went wrong while trying to fetch your bookmarks. Try again later.</string>
 </resources>

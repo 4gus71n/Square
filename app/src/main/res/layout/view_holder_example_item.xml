@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView
+<com.google.android.material.card.MaterialCardView xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginTop="8dp"
     android:layout_marginStart="8dp"
     android:layout_marginEnd="8dp"
@@ -8,27 +8,48 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <LinearLayout
-        android:padding="8dp"
-        android:orientation="vertical"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <ImageView
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_margin="8dp"
+            app:layout_constraintLeft_toRightOf="@+id/viewHolderExampleTitle"
+            android:src="@drawable/ic_bookmark_accent_24dp"
+            android:id="@+id/viewHolderExampleBookmark"
+            android:visibility="gone"
+            tools:visibility="visible"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
         <TextView
-            style="@style/Examples.TextAppearance.Title"
-            tools:text="Really long title title title title title title title title title title title title"
             android:id="@+id/viewHolderExampleTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            style="@style/Examples.TextAppearance.Title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/viewHolderExampleDescription"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/viewHolderExampleBookmark"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:text="Really long title title title title title title title title title title title title" />
 
         <TextView
-            android:paddingTop="8dp"
-            style="@style/Examples.TextAppearance.Description"
-            tools:text="Really long description description description description description description description description"
             android:id="@+id/viewHolderExampleDescription"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            style="@style/Examples.TextAppearance.Description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/viewHolderExampleTitle"
+            app:layout_constraintTop_toBottomOf="@+id/viewHolderExampleTitle"
+            tools:text="Really long description description description description description description description description" />
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </com.google.android.material.card.MaterialCardView>

@@ -3,11 +3,22 @@ package com.kimboo.examples.ui.detail
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.snackbar.Snackbar
 import com.kimboo.core.models.SquareRepository
+import com.kimboo.core.utils.MyViewModelFactory
+import com.kimboo.core.utils.getBaseSubComponent
 import com.kimboo.examples.R
+import com.kimboo.examples.di.component.DaggerExampleViewInjector
+import com.kimboo.examples.di.component.ExampleViewInjector
+import com.kimboo.examples.ui.detail.viewmodel.DetailViewModel
 import kotlinx.android.synthetic.main.detail_activity.*
 import kotlinx.android.synthetic.main.detail_activity_info_section.*
+import javax.inject.Inject
 
 /**
  * Displays the Repository details. There's not much to do here since we are not fetching anything
@@ -15,14 +26,59 @@ import kotlinx.android.synthetic.main.detail_activity_info_section.*
  */
 class DetailActivity : AppCompatActivity() {
 
+    // region Variables declaration
     private var squareRepository: SquareRepository? = null
+
+    @Inject
+    lateinit var viewModelProvider: MyViewModelFactory
+    lateinit var viewModel: DetailViewModel
+
+    private val viewInjector: ExampleViewInjector
+        get() = DaggerExampleViewInjector.builder()
+            .baseSubComponent(getBaseSubComponent())
+            .build()
+    // endregion
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.detail_activity)
+
+        viewInjector.inject(this)
+
+        viewModel = ViewModelProviders.of(this, viewModelProvider)
+            .get(DetailViewModel::class.java)
+
         fetchBundleValus(savedInstanceState)
+
+        observeMessageChanges()
+        observeBookmarkChanges()
+
         setupToolbarView()
         setupTextView()
+    }
+
+    private fun observeBookmarkChanges() {
+        viewModel.isBookmarked.observe(this, Observer {
+            invalidateOptionsMenu() // Triggers the onPrepare
+        })
+    }
+
+    private fun observeMessageChanges() {
+        viewModel.message.observe(this, Observer {
+            when (it) {
+                is DetailViewModel.StateMessage.UnknownSaveBookmarkError -> {
+                    onShowErrorMessage()
+                }
+            }
+        })
+    }
+
+    private fun onShowErrorMessage() {
+        Snackbar.make(
+            activityDetailContainer,
+            getString(R.string.detail_activity_error_saving_bookmark),
+            Snackbar.LENGTH_LONG
+        ).show()
     }
 
     private fun setupTextView() {
@@ -42,6 +98,39 @@ class DetailActivity : AppCompatActivity() {
             savedInstanceState.getParcelable(ARG_BUNDLE_REPOSITORY)
         } else {
             intent.getParcelableExtra(ARG_BUNDLE_REPOSITORY)
+        }
+        viewModel.fetchBookmarkValue(squareRepository!!)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_repository_detail, menu)
+        return true
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        val menuItemBookmark = menu?.findItem(R.id.action_bookmark)
+        val isBookmarked = viewModel.isBookmarked.value ?: false
+        menuItemBookmark?.icon = if (isBookmarked) {
+            // Set marked icon
+            getDrawable(R.drawable.ic_bookmark_white_24dp)
+        } else {
+            // Set unmarked icon
+            getDrawable(R.drawable.ic_bookmark_border_white_24dp)
+        }
+        // Initially the bookmark menu item is invisible until we load its value from cache
+        menuItemBookmark?.isVisible = true
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_bookmark -> {
+                viewModel.bookmarkRepository(squareRepository!!)
+                true
+            }
+            else -> {
+                super.onOptionsItemSelected(item)
+            }
         }
     }
 
