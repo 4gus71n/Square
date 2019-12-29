@@ -18,6 +18,7 @@ import com.kimboo.examples.di.component.ExampleViewInjector
 import com.kimboo.examples.ui.detail.viewmodel.DetailViewModel
 import kotlinx.android.synthetic.main.detail_activity.*
 import kotlinx.android.synthetic.main.detail_activity_info_section.*
+import kotlinx.android.synthetic.main.main_activity.*
 import javax.inject.Inject
 
 /**
@@ -27,8 +28,6 @@ import javax.inject.Inject
 class DetailActivity : AppCompatActivity() {
 
     // region Variables declaration
-    private var squareRepository: SquareRepository? = null
-
     @Inject
     lateinit var viewModelProvider: MyViewModelFactory
     lateinit var viewModel: DetailViewModel
@@ -48,19 +47,43 @@ class DetailActivity : AppCompatActivity() {
         viewModel = ViewModelProviders.of(this, viewModelProvider)
             .get(DetailViewModel::class.java)
 
-        fetchBundleValus(savedInstanceState)
-
         observeMessageChanges()
-        observeBookmarkChanges()
+        observeStateChanges()
 
         setupToolbarView()
-        setupTextView()
+
+        val squareRepositoryId = intent.extras?.getString(ARG_BUNDLE_REPOSITORY_ID)
+        if (squareRepositoryId != null) {
+            viewModel.getSquareRepository(squareRepositoryId)
+        }
     }
 
-    private fun observeBookmarkChanges() {
-        viewModel.isBookmarked.observe(this, Observer {
-            invalidateOptionsMenu() // Triggers the onPrepare
+    private fun observeStateChanges() {
+        viewModel.state.observe(this, Observer {
+            when (it) {
+                is DetailViewModel.State.Success -> {
+                    onShowSquareRepository(it.squareRepository)
+                }
+                is DetailViewModel.State.Error -> {
+                    onDisplayErrorMessage()
+                }
+            }
         })
+    }
+
+    private fun onDisplayErrorMessage() {
+        Snackbar.make(
+            mainActivityExamplesSwipeRefreshLayout,
+            getString(R.string.detail_activity_error_message),
+            Snackbar.LENGTH_LONG
+        ).show()
+    }
+
+    private fun onShowSquareRepository(squareRepository: SquareRepository) {
+        supportActionBar?.title = squareRepository.name
+        activityDetailNameTextView.text = squareRepository.name
+        activityDetailStarsTextView.text = squareRepository.stars.toString()
+        invalidateOptionsMenu()
     }
 
     private fun observeMessageChanges() {
@@ -81,25 +104,10 @@ class DetailActivity : AppCompatActivity() {
         ).show()
     }
 
-    private fun setupTextView() {
-        activityDetailNameTextView.text = squareRepository?.name ?: ""
-        activityDetailStarsTextView.text = squareRepository?.stars.toString()
-    }
-
     private fun setupToolbarView() {
         setSupportActionBar(detailActivityExamplesToolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
-        supportActionBar?.title = squareRepository?.name ?: ""
-    }
-
-    private fun fetchBundleValus(savedInstanceState: Bundle?) {
-        squareRepository = if (savedInstanceState != null) {
-            savedInstanceState.getParcelable(ARG_BUNDLE_REPOSITORY)
-        } else {
-            intent.getParcelableExtra(ARG_BUNDLE_REPOSITORY)
-        }
-        viewModel.fetchBookmarkValue(squareRepository!!)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -109,7 +117,7 @@ class DetailActivity : AppCompatActivity() {
 
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
         val menuItemBookmark = menu?.findItem(R.id.action_bookmark)
-        val isBookmarked = viewModel.isBookmarked.value ?: false
+        val isBookmarked = viewModel.isBookmarked()
         menuItemBookmark?.icon = if (isBookmarked) {
             // Set marked icon
             getDrawable(R.drawable.ic_bookmark_white_24dp)
@@ -125,7 +133,7 @@ class DetailActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_bookmark -> {
-                viewModel.bookmarkRepository(squareRepository!!)
+                viewModel.bookmarkRepository()
                 true
             }
             else -> {
@@ -134,17 +142,12 @@ class DetailActivity : AppCompatActivity() {
         }
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelable(ARG_BUNDLE_REPOSITORY, squareRepository)
-        super.onSaveInstanceState(outState)
-    }
-
     companion object {
-        private const val ARG_BUNDLE_REPOSITORY = "arg_bundle_repository"
+        private const val ARG_BUNDLE_REPOSITORY_ID = "arg_bundle_repository_id"
 
-        fun getStartIntent(context: Context, repository: SquareRepository): Intent {
+        fun getStartIntent(context: Context, squareRepositoryId: String): Intent {
             return Intent(context, DetailActivity::class.java).apply {
-                putExtra(ARG_BUNDLE_REPOSITORY, repository)
+                putExtra(ARG_BUNDLE_REPOSITORY_ID, squareRepositoryId)
             }
         }
     }

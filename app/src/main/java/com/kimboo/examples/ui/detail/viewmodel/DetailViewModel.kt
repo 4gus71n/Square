@@ -2,46 +2,50 @@ package com.kimboo.examples.ui.detail.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.kimboo.core.interactors.GetSquareBookmarkRepositoriesInteractor
-import com.kimboo.core.interactors.SquareBookmarkRepositoriesInteractor
+import com.kimboo.core.interactors.GetSquareRepositoryInteractor
+import com.kimboo.core.interactors.UpdateSquareRepositoryInteractor
 import com.kimboo.core.models.SquareRepository
 import javax.inject.Inject
 
 class DetailViewModel @Inject constructor(
-    private val bookmarkRepositoriesInteractor: SquareBookmarkRepositoriesInteractor,
-    private val getSquareBookmarkRepositoriesInteractor: GetSquareBookmarkRepositoriesInteractor
-) : ViewModel(), SquareBookmarkRepositoriesInteractor.Callback,
-    GetSquareBookmarkRepositoriesInteractor.Callback {
+    private val updateSquareRepositoryInteractor: UpdateSquareRepositoryInteractor,
+    private val getGetSquareRepositoryInteractor: GetSquareRepositoryInteractor
+) : ViewModel(), UpdateSquareRepositoryInteractor.Callback,
+    GetSquareRepositoryInteractor.Callback {
 
     // region Variables declaration
+    sealed class State {
+        data class Success(
+            val squareRepository: SquareRepository
+        ) : State()
+        object Error : State()
+    }
+
     sealed class StateMessage {
         object UnknownSaveBookmarkError: StateMessage()
         object UnknownFetchBookmarkError: StateMessage()
     }
 
-    val isBookmarked = MutableLiveData<Boolean>()
-    val message = MutableLiveData<StateMessage>()
+    private lateinit var _squareRepository: SquareRepository
 
-    private lateinit var squareRepository: SquareRepository
+    val state = MutableLiveData<State>()
+    val message = MutableLiveData<StateMessage>()
     // endregion
 
     // region GetSquareBookmarkRepositoriesInteractor.Callback
-    override fun onSuccessfullyFetchedBookmarkedRepositoriesIds(list: List<String>) {
-        isBookmarked.value = list.contains(squareRepository.id)
+    override fun onSuccessfullyFetchSquareRepository(squareRepository: SquareRepository) {
+        _squareRepository = squareRepository
+        state.value = State.Success(_squareRepository)
     }
 
-    override fun onErrorFetchingBookmarkedRepositories() {
+    override fun onErrorFetchingSquareRepository() {
         message.value = StateMessage.UnknownFetchBookmarkError
     }
     // endregion
 
-    // region SquareBookmarkRepositoriesInteractor.Callback
-    override fun onSquareRepositoryAddedIntoTheBookmarks() {
-        isBookmarked.value = true
-    }
-
-    override fun onSquareRepositoryRemovedFromTheBookmarks() {
-        isBookmarked.value = false
+    // region UpdateSquareRepositoryInteractor.Callback
+    override fun onSquareRepositorySuccessfullyUpdated() {
+        // Do nothing.
     }
 
     override fun onErrorTryingToBookmarkRepository() {
@@ -49,12 +53,18 @@ class DetailViewModel @Inject constructor(
     }
     // endregion
 
-    fun bookmarkRepository(squareRepository: SquareRepository) {
-        bookmarkRepositoriesInteractor.execute(this, squareRepository.id)
+    fun bookmarkRepository() {
+        updateSquareRepositoryInteractor.execute(
+            callback = this,
+            squareRepository = _squareRepository.copy(
+                isBookmarked = !_squareRepository.isBookmarked
+            )
+        )
     }
 
-    fun fetchBookmarkValue(squareRepository: SquareRepository) {
-        this.squareRepository = squareRepository
-        getSquareBookmarkRepositoriesInteractor.execute(this)
+    fun getSquareRepository(squareRepositoryId: String) {
+        getGetSquareRepositoryInteractor.execute(this, squareRepositoryId)
     }
+
+    fun isBookmarked() = _squareRepository.isBookmarked
 }
