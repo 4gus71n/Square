@@ -13,25 +13,26 @@ class InteractorModule {
         squareReposRepository: SquareReposRepository,
         squareBookmarkRepository: SquareBookmarkRepository
     ) : GetSquareRepositoriesInteractor {
-        return GetSquareRepositoriesInteractorImpl(
-            squareReposRepository = squareReposRepository
+        return GetSquareRepositoriesInteractorFlowableImpl(
+            squareReposRepository = squareReposRepository,
+            squareBookmarkCacheRepository = squareBookmarkRepository
         )
     }
 
     @Provides
-    fun provideSquareBookmarkRepositoriesInteractor(
+    fun provideUpdateSquareRepositoryInteractor(
         squareBookmarkRepository: SquareBookmarkRepository
-    ) : SquareBookmarkRepositoriesInteractor {
-        return SquareBookmarkRepositoriesInteractorImpl(
+    ) : UpdateSquareRepositoryInteractor {
+        return UpdateSquareRepositoryInteractorImpl(
             squareBookmarkRepository = squareBookmarkRepository
         )
     }
 
     @Provides
-    fun provideGetSquareBookmarkRepositoriesInteractor(
+    fun provideGetSquareRepositoryInteractor(
         squareBookmarkRepository: SquareBookmarkRepository
-    ) : GetSquareBookmarkRepositoriesInteractor {
-        return GetSquareBookmarkRepositoriesInteractorImpl(
+    ) : GetSquareRepositoryInteractor {
+        return GetSquareRepositoryInteractorImpl(
             squareBookmarkRepository = squareBookmarkRepository
         )
     }
