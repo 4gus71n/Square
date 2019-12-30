@@ -34,4 +34,8 @@ Simple **multi-module MVVM** architecture. The **base** module contains everythi
 
 - Added the bookmarking feature. I implemented the cache just using the SharedPreferences. I'm probably going to start a new PR with a different, more scalable solution.
 
+##### Update #2
+
+- Merged into master a new implementation where we use Room instead of the SharedPreferences to keep track of the bookmarked repositories. I'm keeping both branches so we can see both implementations; The SharedPreferences implementation on features/bookmarks and the Room implementation on features/bookmarks_room. I'm also updating the demo apk.
+
 
