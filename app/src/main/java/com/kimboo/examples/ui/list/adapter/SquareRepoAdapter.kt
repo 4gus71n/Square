@@ -32,7 +32,6 @@ class SquareRepoAdapter(
     }
 
     val repositories = mutableListOf<SquareRepository>()
-    val bookmarkedRepositories = mutableListOf<String>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExampleViewHolder {
         return ExampleViewHolder(
@@ -44,7 +43,7 @@ class SquareRepoAdapter(
 
     override fun onBindViewHolder(holder: ExampleViewHolder, position: Int) {
         val repository = repositories[position]
-        holder.bookmarkImageView.visibility = if (bookmarkedRepositories.contains(repository.id)) {
+        holder.bookmarkImageView.visibility = if (repository.isBookmarked) {
             View.VISIBLE
         } else {
             View.GONE

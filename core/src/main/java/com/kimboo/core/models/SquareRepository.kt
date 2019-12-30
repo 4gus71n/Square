@@ -7,5 +7,6 @@ import kotlinx.android.parcel.Parcelize
 data class SquareRepository(
     val id: String,
     val name: String,
-    val stars: Int
+    val stars: Int,
+    val isBookmarked: Boolean
 ) : Parcelable

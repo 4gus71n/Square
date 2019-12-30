@@ -1,8 +1,8 @@
 package com.kimboo.core.di.component
 
-import com.kimboo.core.interactors.GetSquareBookmarkRepositoriesInteractor
 import com.kimboo.core.interactors.GetSquareRepositoriesInteractor
-import com.kimboo.core.interactors.SquareBookmarkRepositoriesInteractor
+import com.kimboo.core.interactors.GetSquareRepositoryInteractor
+import com.kimboo.core.interactors.UpdateSquareRepositoryInteractor
 import dagger.Subcomponent
 
 /**
@@ -12,9 +12,9 @@ import dagger.Subcomponent
  */
 @Subcomponent
 interface BaseSubComponent {
-    val getSquareBookmarkRepositoriesInteractor: GetSquareBookmarkRepositoriesInteractor
+    val getSquareRepositoryInteractor: GetSquareRepositoryInteractor
     val getSquareRepositoriesInteractor: GetSquareRepositoriesInteractor
-    val bookmarkRepositoriesInteractor: SquareBookmarkRepositoriesInteractor
+    val updateSquareRepositoryInteractor: UpdateSquareRepositoryInteractor
 
     @Subcomponent.Builder
     interface Builder {
